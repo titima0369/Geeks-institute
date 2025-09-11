@@ -1,0 +1,39 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: #f2f2f2;
+  margin: 20px;
+}
+
+h1 { margin-bottom: 10px; }
+
+.controls {
+  margin-bottom: 12px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.grid {
+  display: grid;
+  gap: 1px;
+  background: #999;
+  margin: 0 auto;
+  padding: 6px;
+  width: fit-content;
+  border-radius: 6px;
+}
+
+.square {
+  width: 20px;
+  height: 20px;
+  background: white;
+  cursor: crosshair;
+  user-select: none;
+}
+
+@media (max-width: 520px) {
+  .square { width: 14px; height: 14px; }
+}

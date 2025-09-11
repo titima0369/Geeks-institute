@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Coloring Squares</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Coloring Squares</h1>
+
+  <div class="controls">
+    <label>Pick a color: <input type="color" id="colorPicker" value="#000000"></label>
+
+    <button id="eraserBtn">Eraser</button>
+    <button id="clearBtn">Clear</button>
+
+    <label>Grid size:
+      <input type="range" id="sizeRange" min="8" max="60" value="30">
+      <span id="sizeLabel">30 x 30</span>
+    </label>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <script src="main.js"></script>
+</body>
+</html>
