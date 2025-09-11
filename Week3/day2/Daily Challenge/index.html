@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Solar System</title>
+  <style>
+  
+    body {
+      background: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    h1 { text-align: center; color: #ddd; }
+
+    
+    .listPlanets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      align-items: flex-start;
+      margin-top: 20px;
+    }
+
+    
+    .planet-wrapper {
+      width: 220px;
+      height: 220px;
+      position: relative;
+      display: inline-block;
+    }
+
+    
+    .planet {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      border: 2px solid rgba(255,255,255,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: white;
+      box-shadow: 0 0 8px rgba(255,255,255,0.05);
+      user-select: none;
+    }
+
+    
+    .moon {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #ddd;
+      border: 2px solid rgba(255,0,0,0.6);
+      transform: translate(-50%, -50%);
+    }
+
+    .planet .label {
+      font-size: 12px;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    @media (max-width: 520px) {
+      .planet-wrapper { width: 150px; height: 150px; }
+      .planet { width: 70px; height: 70px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Solar System (planets & moons)</h1>
+
+  <!-- the script will append planet-wrapper divs here -->
+  <section class="listPlanets"></section>
+
+  <!-- link to your JS file -->
+  <script src="main.js"></script>
+</body>
+</html>
