@@ -1,0 +1,54 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #000;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px;
+}
+
+.container {
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+}
+
+button {
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  background: #feda4a;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #ffe35c;
+}
+
+.hidden {
+  display: none;
+}
+
+.card {
+  background: #111;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #feda4a;
+  margin-top: 20px;
+  text-align: left;
+}
+
+#loading {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #feda4a;
+}
+
+#errorMsg {
+  margin-top: 20px;
+  color: red;
+  font-weight: bold;
+}
