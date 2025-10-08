@@ -1,0 +1,22 @@
+{% from "macros/forms.html" import render_field %}
+<form method="post" class="bg-white p-4 rounded shadow">
+  {{ form.hidden_tag() }}
+  {{ render_field(form.title) }}
+  {{ render_field(form.description) }}
+  {{ render_field(form.price) }}
+  <div class="mb-3">
+    <label class="block text-sm mb-1">{{ form.is_available.label.text }}</label>
+    {{ form.is_available(class_='mr-2') }}
+  </div>
+  <div class="mb-3">
+    <label class="block text-sm mb-1">{{ form.category_id.label.text }}</label>
+    {{ form.category_id(class_='border rounded w-full px-3 py-2') }}
+  </div>
+  <div class="mb-3">
+    <label class="block text-sm mb-1">{{ form.chef_ids.label.text }}</label>
+    {{ form.chef_ids(class_='border rounded w-full px-3 py-2', multiple=True, size=5) }}
+  </div>
+  <div>
+    <button class="px-3 py-2 bg-gray-900 text-white rounded">{{ form.submit.label.text }}</button>
+  </div>
+</form>

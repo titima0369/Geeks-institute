@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-3xl font-bold mb-6 text-gray-800">Dashboard</h1>
+
+<div class="grid md:grid-cols-2 gap-6">
+  <div class="bg-white p-6 border rounded-2xl shadow hover:shadow-lg transition">
+    <h2 class="text-lg font-semibold text-gray-700 mb-4">Events per organizer</h2>
+    <canvas id="chart1" class="w-full h-64"></canvas>
+  </div>
+
+  <div class="bg-white p-6 border rounded-2xl shadow hover:shadow-lg transition">
+    <h2 class="text-lg font-semibold text-gray-700 mb-4">Most popular events (attendees)</h2>
+    <canvas id="chart2" class="w-full h-64"></canvas>
+  </div>
+
+  <div class="bg-white p-6 border rounded-2xl shadow hover:shadow-lg transition md:col-span-2">
+    <h2 class="text-lg font-semibold text-gray-700 mb-4">Total attendees over time</h2>
+    <canvas id="chart3" class="w-full h-72"></canvas>
+  </div>
+</div>
+
+<script>
+async function fetchJSON(url) {
+  const res = await fetch(url);
+  return await res.json();
+}
+(async () => {
+  const d1 = await fetchJSON('{{ url_for("events_stats.events_per_organizer") }}');
+  const d2 = await fetchJSON('{{ url_for("events_stats.events_popularity") }}');
+  const d3 = await fetchJSON('{{ url_for("events_stats.attendees_over_time") }}');
+
+  new Chart(document.getElementById('chart1'), {
+    type:'bar', 
+    data:{
+      labels:d1.labels, 
+      datasets:[{label:'Events', data:d1.data, backgroundColor:'#3b82f6'}]
+    }
+  });
+
+  new Chart(document.getElementById('chart2'), {
+    type:'bar', 
+    data:{
+      labels:d2.labels, 
+      datasets:[{label:'Attendees', data:d2.data, backgroundColor:'#10b981'}]
+    }
+  });
+
+  new Chart(document.getElementById('chart3'), {
+    type:'line', 
+    data:{
+      labels:d3.labels, 
+      datasets:[{label:'Attendees', data:d3.data, borderColor:'#ef4444', fill:false}]
+    }
+  });
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Restaurant Admin{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-900">
+  <nav class="bg-white border-b shadow-sm">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-4">
+          <a href="{{ url_for('main.home') }}" class="font-bold text-xl">🍽️ RMS</a>
+          <a href="{{ url_for('items.index') }}" class="hover:underline">Items</a>
+          <a href="{{ url_for('chefs.index') }}" class="hover:underline">Chefs</a>
+          <a href="{{ url_for('categories.index') }}" class="hover:underline">Categories</a>
+          <a href="{{ url_for('orders.index') }}" class="hover:underline">Orders</a>
+          <a href="{{ url_for('main.dashboard') }}" class="hover:underline">Dashboard</a>
+        </div>
+        <form action="{{ request.path }}" method="get" class="flex gap-2">
+          <input type="text" name="q" value="{{ request.args.get('q','') }}" placeholder="Search..."
+                 class="border px-2 py-1 rounded">
+          <button class="px-3 py-1 bg-gray-900 text-white rounded">Search</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <main class="max-w-6xl mx-auto px-4 py-6">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="space-y-2 mb-4">
+          {% for category, msg in messages %}
+            <div class="p-3 rounded border {% if category=='success' %}bg-green-50 border-green-200{% else %}bg-red-50 border-red-200{% endif %}">
+              {{ msg }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <script>
+    function confirmDelete(formId) {
+      if (confirm("Are you sure you want to delete this item?")) {
+        document.getElementById(formId).submit();
+      }
+    }
+  </script>
+</body>
+</html>

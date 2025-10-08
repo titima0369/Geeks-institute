@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Orders - RMS{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <h1 class="text-xl font-semibold">Orders</h1>
+  <a href="{{ url_for('orders.create') }}" class="px-3 py-2 rounded bg-gray-900 text-white">+ New Order</a>
+</div>
+
+{% if pagination.total == 0 %}
+  <div class="p-4 bg-white rounded shadow">No orders yet.</div>
+{% else %}
+  <div class="space-y-3">
+    {% for o in pagination.items %}
+      <div class="p-4 bg-white rounded shadow flex items-center justify-between">
+        <div>
+          <div class="font-semibold">#{{ o.id }} • {{ o.customer_name }}</div>
+          <div class="text-sm text-gray-600">{{ o.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+          <div class="text-sm">
+            {{ o.items|length }} items •
+            <span class="px-2 py-1 rounded text-xs {{ 'bg-green-100 text-green-700' if o.status=='paid' else 'bg-yellow-100 text-yellow-700' }}">{{ o.status }}</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <a class="px-3 py-1 rounded border" href="{{ url_for('orders.show', order_id=o.id) }}">View</a>
+          <form id="del-order-{{ o.id }}" method="post" action="{{ url_for('orders.delete', order_id=o.id) }}">
+            <button type="button" onclick="confirmDelete('del-order-{{ o.id }}')" class="px-3 py-1 rounded border">Delete</button>
+          </form>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="mt-6 flex items-center gap-2">
+    {% if pagination.has_prev %}
+      <a class="px-3 py-1 border rounded" href="{{ url_for('orders.index', page=pagination.prev_num) }}">Prev</a>
+    {% endif %}
+    <span>Page {{ pagination.page }} / {{ pagination.pages }}</span>
+    {% if pagination.has_next %}
+      <a class="px-3 py-1 border rounded" href="{{ url_for('orders.index', page=pagination.next_num) }}">Next</a>
+    {% endif %}
+  </div>
+{% endif %}
+{% endblock %}

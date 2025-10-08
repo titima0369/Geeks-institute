@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white p-6 rounded-2xl shadow-md">
+  <h1 class="text-2xl font-bold mb-6 text-gray-800">Register Attendee to Event</h1>
+  <form method="POST" class="space-y-4">
+    <div>
+      <label class="block text-sm font-medium mb-1">Event</label>
+      <select 
+        name="event_id" 
+        class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+        required
+      >
+        {% for e in events %}
+          <option value="{{ e[0] }}">{{ e[1] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium mb-1">Attendee</label>
+      <select 
+        name="attendee_id" 
+        class="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+        required
+      >
+        {% for a in attendees %}
+          <option value="{{ a[0] }}">{{ a[1] }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <button 
+      type="submit"
+      class="bg-green-600 hover:bg-green-700 text-white font-semibold px-5 py-2 rounded-md shadow-md transition duration-200"
+    >
+      Register
+    </button>
+  </form>
+</div>
+{% endblock %}
+  

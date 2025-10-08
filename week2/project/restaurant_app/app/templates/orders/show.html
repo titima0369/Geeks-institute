@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Order #{{ order.id }} - RMS{% endblock %}
+{% block content %}
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="text-xl font-semibold">Order #{{ order.id }}</h1>
+    {% if order.status != 'paid' %}
+      <form method="post" action="{{ url_for('orders.mark_paid', order_id=order.id) }}">
+        <button class="px-3 py-2 bg-green-700 text-white rounded">Mark Paid</button>
+      </form>
+    {% endif %}
+  </div>
+  <div class="bg-white rounded shadow p-4">
+    <div class="text-sm text-gray-600">{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+    <div class="font-semibold mb-2">{{ order.customer_name }}</div>
+    <table class="w-full text-left mt-2">
+      <thead>
+        <tr class="border-b">
+          <th class="py-2">Item</th>
+          <th class="py-2">Qty</th>
+          <th class="py-2">Price</th>
+          <th class="py-2">Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% set total = 0 %}
+        {% for oi in order.items %}
+          {% set subtotal = oi.quantity * oi.price_at_order %}
+          {% set total = total + subtotal %}
+          <tr class="border-b">
+            <td class="py-2">{{ oi.menu_item.title }}</td>
+            <td class="py-2">{{ oi.quantity }}</td>
+            <td class="py-2">{{ '{:.2f}'.format(oi.price_at_order) }} MAD</td>
+            <td class="py-2">{{ '{:.2f}'.format(subtotal) }} MAD</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="3" class="text-right font-semibold py-2">Total</td>
+          <td class="font-semibold">{{ '{:.2f}'.format(total) }} MAD</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+{% endblock %}

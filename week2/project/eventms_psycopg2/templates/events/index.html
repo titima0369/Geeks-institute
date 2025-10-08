@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <h1 class="text-2xl font-bold text-gray-900">Events</h1>
+    {% if current_user.is_authenticated %}
+    <a href="{{ url_for('events.create_event') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2">
+      + New Event
+    </a>
+    {% endif %}
+  </div>
+
+  <!-- Search -->
+  <div class="relative">
+    <input type="text" name="q" value="{{ q }}" placeholder="Search events..." class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+    <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/>
+    </svg>
+  </div>
+
+  <!-- Events Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {% for e in events %}
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
+      <div class="p-6">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">
+              <a href="{{ url_for('events.details', event_id=e[0]) }}">{{ e[1] }}</a>
+            </h3>
+            <span class="px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+              {{ e[3] }}
+            </span>
+          </div>
+          {% if current_user.is_authenticated %}
+          <div class="flex gap-2">
+            <a href="{{ url_for('events.edit_event', event_id=e[0]) }}" class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+              Edit
+            </a>
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="space-y-2 mb-4 text-sm text-gray-600">
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+            {{ e[2] }}
+          </div>
+          <div class="flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 15c2.55 0 4.92.64 7.121 1.804M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+            Organizer: {{ e[4] }}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% set total_pages = (total // per_page) + (1 if total % per_page else 0) %}
+  <div class="mt-6 flex gap-2">
+    {% for p in range(1, total_pages+1) %}
+      {% if p == page %}
+        <span class="px-3 py-1 border rounded bg-gray-200">{{ p }}</span>
+      {% else %}
+        <a class="px-3 py-1 border rounded hover:bg-gray-100" href="?page={{p}}{% if q %}&q={{ q }}{% endif %}">{{ p }}</a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

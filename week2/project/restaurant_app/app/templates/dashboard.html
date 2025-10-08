@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+
+<h1 class="text-3xl font-bold mb-6 text-gray-800">Dashboard</h1>
+
+<!-- Stats cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+  <div class="p-5 bg-blue-100 rounded-lg shadow hover:shadow-lg transition duration-200">
+    <div class="flex items-center">
+      <div class="flex-shrink-0">
+        <svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h4l3 8 4-16 3 8h4"></path></svg>
+      </div>
+      <div class="ml-4">
+        <div class="text-sm font-medium text-gray-600">Items</div>
+        <div class="text-2xl font-bold text-gray-800">{{ stats["items"] }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="p-5 bg-green-100 rounded-lg shadow hover:shadow-lg transition duration-200">
+    <div class="flex items-center">
+      <div class="flex-shrink-0">
+        <svg class="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+      </div>
+      <div class="ml-4">
+        <div class="text-sm font-medium text-gray-600">Chefs</div>
+        <div class="text-2xl font-bold text-gray-800">{{ stats["chefs"] }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="p-5 bg-yellow-100 rounded-lg shadow hover:shadow-lg transition duration-200">
+    <div class="flex items-center">
+      <div class="flex-shrink-0">
+        <svg class="w-10 h-10 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6h13v6H9z"></path></svg>
+      </div>
+      <div class="ml-4">
+        <div class="text-sm font-medium text-gray-600">Categories</div>
+        <div class="text-2xl font-bold text-gray-800">{{ stats["categories"] }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="p-5 bg-red-100 rounded-lg shadow hover:shadow-lg transition duration-200">
+    <div class="flex items-center">
+      <div class="flex-shrink-0">
+        <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18"></path></svg>
+      </div>
+      <div class="ml-4">
+        <div class="text-sm font-medium text-gray-600">Orders</div>
+        <div class="text-2xl font-bold text-gray-800">{{ stats["orders"] }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Charts -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div class="p-6 bg-white rounded-lg shadow">
+    <h2 class="text-lg font-semibold mb-3 text-gray-700">Items per Category</h2>
+    <div class="h-80">
+      <canvas id="catChart" class="h-80"></canvas>
+    </div>
+  </div>
+  <div class="p-6 bg-white rounded-lg shadow">
+    <h2 class="text-lg font-semibold mb-3 text-gray-700">Top Items (by quantity)</h2>
+    <div class="h-80">
+      <canvas id="topChart" class="h-80"></canvas>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const catLabels = {{ cat_counts | default([]) | map(attribute=0) | list | tojson }};
+const catData   = {{ cat_counts | default([]) | map(attribute=1) | list | tojson }};
+
+const topLabels = {{ top_items | default([]) | map(attribute=0) | list | tojson }};
+const topData   = {{ top_items | default([]) | map(attribute=1) | list | tojson }};
+
+new Chart(document.getElementById('catChart'), {
+  type: 'bar',
+  data: { labels: catLabels, datasets: [{ label: 'Items', data: catData, backgroundColor: 'rgba(59,130,246,0.7)' }] },
+  options: { responsive: true, maintainAspectRatio: false }
+});
+
+new Chart(document.getElementById('topChart'), {
+  type: 'bar',
+  data: { labels: topLabels, datasets: [{ label: 'Quantity', data: topData, backgroundColor: 'rgba(16,185,129,0.7)' }] },
+  options: { responsive: true, maintainAspectRatio: false }
+});
+</script>
+
+{% endblock %}

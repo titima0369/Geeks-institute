@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="space-y-6">
+  <!-- Back link -->
+  <a href="{{ url_for('events.list_events') }}" class="inline-flex items-center text-sm text-gray-600 hover:text-gray-900 transition-colors">
+    &larr; Back to events
+  </a>
+
+  <!-- Event Info -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <h1 class="text-2xl font-bold text-gray-900 mb-2">{{ event[1] }}</h1>
+    <div class="text-gray-600 text-sm mb-4">
+      {{ event[2] }} — {{ event[3] }}
+    </div>
+    <p class="text-gray-700 mb-2">{{ event[4] }}</p>
+    <p class="text-xs text-gray-500">Organizer: {{ event[5] }}</p>
+  </div>
+
+  <!-- Attendees -->
+  <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <h2 class="text-xl font-semibold text-gray-900 mb-4">Attendees</h2>
+    <ul class="space-y-2">
+      {% for a in attendees %}
+      <li class="border border-gray-200 rounded-lg p-3 flex justify-between items-center hover:bg-gray-50 transition-colors">
+        <span class="text-sm font-medium text-gray-800">{{ a[1] }}</span>
+        <span class="text-xs text-gray-500">{{ a[2] }}</span>
+      </li>
+      {% else %}
+      <li class="text-gray-500 text-sm">No attendees yet.</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Actions -->
+  {% if current_user.is_authenticated %}
+  <div class="flex flex-wrap gap-3">
+    <a href="{{ url_for('tickets.register_ticket') }}" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+      + Register Attendee
+    </a>
+    <a href="{{ url_for('events.edit_event', event_id=event[0]) }}" class="border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors">
+      Edit Event
+    </a>
+    <form method="POST" action="{{ url_for('events.delete_event', event_id=event[0]) }}" onsubmit="return confirm('Delete this event?')">
+      <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+        Delete
+      </button>
+    </form>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

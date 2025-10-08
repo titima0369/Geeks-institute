@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title or 'EventMS' }}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* Chat widget styles */
+    #chat-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 24px;
+      cursor: pointer;
+    }
+    #chat-box {
+      display: none;
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 300px;
+      height: 400px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      flex-direction: column;
+    }
+    #chat-messages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      font-size: 14px;
+    }
+    #chat-input {
+      display: flex;
+    }
+    #chat-input input {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-top: 1px solid #ddd;
+    }
+    #chat-input button {
+      padding: 8px;
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <!-- Navbar -->
+  <nav class="bg-white border-b border-gray-200 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="{{ url_for('events.list_events') }}" class="text-xl font-bold text-indigo-600 hover:text-indigo-700 transition-colors">
+        EventMS
+      </a>
+      <div class="flex items-center gap-6 text-sm font-medium">
+        <a href="{{ url_for('events.list_events') }}" class="text-gray-600 hover:text-indigo-600 transition-colors">Events</a>
+        <a href="{{ url_for('organizers.list_organizers') }}" class="text-gray-600 hover:text-indigo-600 transition-colors">Organizers</a>
+        <a href="{{ url_for('attendees.list_attendees') }}" class="text-gray-600 hover:text-indigo-600 transition-colors">Attendees</a>
+        <a href="{{ url_for('stats') }}" class="text-gray-600 hover:text-indigo-600 transition-colors">Dashboard</a>
+        {% if current_user.is_authenticated %}
+          <span class="text-gray-500">Hi, <span class="font-semibold">{{ current_user.username }}</span></span>
+          <a href="{{ url_for('auth.logout') }}" class="text-red-600 hover:text-red-700 transition-colors">Logout</a>
+        {% else %}
+          <a href="{{ url_for('auth.login') }}" class="text-indigo-600 hover:text-indigo-700 transition-colors">Login</a>
+          <a href="{{ url_for('auth.register') }}" class="text-indigo-600 hover:text-indigo-700 transition-colors">Register</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="max-w-6xl mx-auto px-4 py-8">
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="space-y-3 mb-6">
+          {% for category, message in messages %}
+            <div class="flex items-center gap-2 p-4 rounded-lg border text-sm font-medium
+                        {% if category == 'success' %} bg-green-50 text-green-800 border-green-300
+                        {% elif category == 'error' %} bg-red-50 text-red-800 border-red-300
+                        {% else %} bg-gray-50 text-gray-700 border-gray-300 {% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Chat widget -->
+  <button id="chat-toggle">💬</button>
+  <div id="chat-box">
+    <div id="chat-messages"></div>
+    <div id="chat-input">
+      <input type="text" id="user-message" placeholder="Type a message...">
+      <button id="send-message">Send</button>
+    </div>
+  </div>
+
+<script>
+  const toggleBtn = document.getElementById("chat-toggle");
+  const chatBox = document.getElementById("chat-box");
+  const messagesDiv = document.getElementById("chat-messages");
+  const sendBtn = document.getElementById("send-message");
+  const userInput = document.getElementById("user-message");
+
+  toggleBtn.addEventListener("click", () => {
+    chatBox.style.display = chatBox.style.display === "flex" ? "none" : "flex";
+  });
+
+  sendBtn.addEventListener("click", async () => {
+    const message = userInput.value;
+    if (!message) return;
+
+    messagesDiv.innerHTML += `<div class="mb-1"><b>You:</b> ${message}</div>`;
+    userInput.value = "";
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+    try {
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message })
+      });
+      const data = await res.json();
+      messagesDiv.innerHTML += `<div class="mb-1"><b>Bot:</b> ${data.answer}</div>`;
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    } catch (err) {
+      messagesDiv.innerHTML += `<div class="mb-1 text-red-500"><b>Bot:</b>!! You can call this number 0695968053 for assistance.</div>`;
+    }
+  });
+
+  userInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") sendBtn.click();
+  });
+</script>
+
+</body>
+</html>
